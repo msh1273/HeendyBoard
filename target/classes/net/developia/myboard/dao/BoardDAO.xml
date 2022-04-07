@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.developia.myboard.dao.BoardDAO">
+
+	<insert id="insertBoard" parameterType="BoardDTO">
+		<selectKey resultType="int" keyProperty="no" order="BEFORE">
+	        SELECT MAX(no)+1 FROM t_board        
+	    </selectKey> 
+		INSERT INTO t_board(no, title, name, password, content, board_name)
+		VALUES(#{no}, #{title}, #{name}, #{password}, #{content}, #{boardName})
+
+	</insert>
+	
+	<!-- 게시판 삽입 -->
+	<insert id="insertBoardType" parameterType="String">
+		INSERT INTO t_type_board(board_name)
+		VALUES(#{boardTypeName})
+	</insert>
+	<!-- 페이징 처리한 게시글 가져오기 -->
+	<select id="getBoardList" resultType="BoardDTO">
+		SELECT B.*
+			FROM (SELECT rownum as rn, A.*
+				FROM (SELECT no, title, name, regdate, readcount
+						FROM t_board
+						WHERE board_name = #{bt}
+						ORDER BY no desc) A 
+						) B
+		where rn between #{startNum} and #{endNum}
+	</select>
+	
+	<!-- 해당 게시판의 전체 게시글 갯수 -->
+	<select id="getBoardTotal" resultType="long">
+		SELECT count(*) as cnt
+		FROM t_board
+		WHERE board_name = #{bt}
+	</select>
+	<!-- 모든 게시글 종류 -->
+	<select id="getAllBoardType" resultType="String">
+		SELECT * from t_type_board
+	</select>
+	
+	<select id="getDetail" parameterType="long" resultType="BoardDTO">
+		SELECT 
+			no,
+			title,
+			name,
+			content,
+			regdate,
+			readcount,
+			board_name boardName
+		FROM 
+			t_board 
+		WHERE
+			no=#{no}
+	</select>
+	
+	<update id="updateViews" parameterType="long">
+		UPDATE
+			t_board
+		set
+			readcount=readcount+1
+		where 
+			no=#{no}
+	</update>
+
+	<delete id="deleteBoard" parameterType="BoardDTO">
+		DELETE t_board
+		WHERE no=#{no} AND password=#{password}
+	</delete>
+
+	<update id="updateBoard" parameterType="BoardDTO">
+		UPDATE
+			t_board
+		SET
+			title=#{title},
+			name=#{name},
+			content=#{content}
+		WHERE
+			no=#{no} and password=#{password}
+	</update>
+
+</mapper>
