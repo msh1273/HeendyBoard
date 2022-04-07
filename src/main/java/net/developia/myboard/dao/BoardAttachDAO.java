@@ -7,10 +7,10 @@ import net.developia.myboard.dto.BoardAttachDTO;
 public interface BoardAttachDAO {
 	
 	public void register(BoardAttachDTO dto);
-	/*
-	 * public void delete(String uuid); public List<BoardAttachDTO> findByNo(Long
-	 * no);
-	 */
+
+	public void delete(String uuid);
+	
+	public void deleteAll(Long no);
 
 	public List<BoardAttachDTO> findByNo(Long no);
 }

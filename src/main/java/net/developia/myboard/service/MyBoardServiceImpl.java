@@ -16,6 +16,7 @@ import net.developia.myboard.dao.BoardDAO;
 import net.developia.myboard.dto.BoardAttachDTO;
 import net.developia.myboard.dto.BoardDTO;
 
+
 @Log4j
 @Service
 public class MyBoardServiceImpl implements MyBoardService{
@@ -25,12 +26,6 @@ public class MyBoardServiceImpl implements MyBoardService{
 	
 	@Setter(onMethod_ = @Autowired)
 	private BoardAttachDAO boardAttachDAO;
-	
-	/*
-	 * 
-	 * public MyBoardServiceImpl(BoardDAO boardDAO) { this.boardDAO = boardDAO; }
-	 */
-
 
 	@Value("${pageSize}")
 	private int pageSize;
@@ -96,9 +91,16 @@ public class MyBoardServiceImpl implements MyBoardService{
 		boardDAO.insertBoardType(boardTypeName);
 	}
 
+	//첨부파일 삭제와 실제 게시물 삭제가 같이 처리되기 위한 트랜잭션
+	@Transactional
 	@Override
-	public void deleteBoard(BoardDTO boardDTO) throws Exception {
-		boardDAO.deleteBoard(boardDTO);
+	public int deleteBoard(BoardDTO boardDTO) throws Exception {
+		log.info("삭제..." + boardDTO.getNo());
+		//DB의 첨부파일부터 삭제
+		boardAttachDAO.deleteAll(boardDTO.getNo());
+		//이후 게시글 삭제
+		int n = boardDAO.deleteBoard(boardDTO);
+		return n;
 	}
 
 	@Override

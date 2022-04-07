@@ -7,11 +7,16 @@
 		INSERT INTO t_attach(uuid, uploadPath, filename, filetype, no)
 		VALUES (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{no})
 	</insert>
-<!--	
+
 	<delete id="delete">
 		DELETE FROM t_attach where uuid = #{uuid}
 	</delete>
-	-->
+	
+	<!-- 해당 게시글의 첨부파일 모두 삭제하기 -->
+	<delete id="deleteAll">
+		DELETE t_attach where no = #{no}
+	</delete>
+	
 	<select id="findByNo" resultType="BoardAttachDTO">
 		SELECT * FROM t_attach where no = #{no}
 	</select> 

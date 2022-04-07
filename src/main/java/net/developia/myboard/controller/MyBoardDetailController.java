@@ -1,5 +1,10 @@
 package net.developia.myboard.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.log4j.Log4j;
+import net.developia.myboard.dto.BoardAttachDTO;
 import net.developia.myboard.dto.BoardDTO;
 import net.developia.myboard.service.MyBoardService;
 
@@ -86,14 +92,44 @@ public class MyBoardDetailController {
 	@PostMapping(value="delete")
 	public String delete(@ModelAttribute BoardDTO boardDTO, Model model) {
 		try {
-			myBoardService.deleteBoard(boardDTO);
-			model.addAttribute("msg", boardDTO.getNo() + "번 게시물이 삭제되었습니다.");
-			model.addAttribute("url", "../../1/");
+			List<BoardAttachDTO> attachList = myBoardService.getAttachList(boardDTO.getNo());
+			
+			if(myBoardService.deleteBoard(boardDTO) == 1) {
+				//로컬의 데이터도 제거
+				deleteFiles(attachList);
+				model.addAttribute("msg", boardDTO.getNo() + "번 게시물이 삭제되었습니다.");
+				model.addAttribute("url", "../../1/");
+			}else {
+				model.addAttribute("msg","비밀번호가 틀리거나 오류가 발생했습니다.");
+				model.addAttribute("url", "../../1/");
+			}
 			return "result";
 		}catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
 			return "result";
 		}
+	}
+	
+	private void deleteFiles(List<BoardAttachDTO> attachList) {
+		 if(attachList == null || attachList.size() == 0) {
+			 return;
+		 }
+		 log.info("delete attach files......");
+		 log.info(attachList);
+		 
+		 attachList.forEach(attach ->{
+			 try {
+				 Path file = Paths.get("C:\\upload\\" + attach.getUploadPath() + "\\" + attach.getUuid() + "_" + attach.getFileName());
+				 Files.deleteIfExists(file);
+				 if(Files.probeContentType(file).startsWith("image")) {
+					Path thumbNail = Paths.get("C:\\upload\\"+attach.getUploadPath() + "\\s_" + attach.getUuid() + "_" + attach.getFileName());
+					
+					Files.delete(thumbNail);
+				 }
+			 }catch (Exception e) {
+				log.error("파일 삭제중 오류!" + e.getMessage());
+			}
+		 });
 	}
 }

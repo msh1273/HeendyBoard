@@ -24,7 +24,7 @@ public interface BoardDAO {
 
 	void insertBoardType(@Param("boardTypeName") String boardTypeName)throws Exception;
 
-	void deleteBoard(BoardDTO boardDTO) throws Exception;
+	int deleteBoard(BoardDTO boardDTO) throws Exception;
 	
 	
 

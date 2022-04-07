@@ -23,7 +23,7 @@ public interface MyBoardService {
 
 	void insertBoardType(String boardTypeName) throws Exception;
 
-	void deleteBoard(BoardDTO boardDTO) throws Exception;
+	int deleteBoard(BoardDTO boardDTO) throws Exception;
 
 	public List<BoardAttachDTO> getAttachList(Long no) throws Exception;
 }
