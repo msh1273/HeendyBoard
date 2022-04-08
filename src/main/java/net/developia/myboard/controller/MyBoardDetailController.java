@@ -58,7 +58,7 @@ public class MyBoardDetailController {
 	}
 	
 	@GetMapping(value="update")
-	public String update(@PathVariable long no, Model model) {
+	public String update(@PathVariable("bt") String bt, @PathVariable("no") long no, @PathVariable("pg") long pg, Model model) {
 		try {
 			BoardDTO boardDTO = myBoardService.getDetail(no);
 			model.addAttribute("boardDTO", boardDTO);
@@ -73,9 +73,14 @@ public class MyBoardDetailController {
 	@PostMapping(value="update")
 	public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
 		try {
-			myBoardService.updateBoard(boardDTO);
-			model.addAttribute("msg", boardDTO.getNo() + "번 게시물이 수정되었습니다.");
-			model.addAttribute("url", "../");
+			int n = myBoardService.updateBoard(boardDTO);
+			if(n == 1) {
+				model.addAttribute("msg", boardDTO.getNo() + "번 게시물이 수정되었습니다.");				
+				model.addAttribute("url", "../");
+			}else {
+				model.addAttribute("msg", "비밀번호가 틀리거나 오류가 발생했습니다.");				
+				model.addAttribute("url", "../");
+			}
 			return "result";
 		}catch (Exception e) {
 			model.addAttribute("msg", "입력에러");

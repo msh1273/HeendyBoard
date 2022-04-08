@@ -20,7 +20,7 @@ public interface BoardDAO {
 
 	BoardDTO getDetail(long no) throws Exception;
 
-	void updateBoard(BoardDTO boardDTO)throws Exception;
+	int updateBoard(BoardDTO boardDTO)throws Exception;
 
 	void insertBoardType(@Param("boardTypeName") String boardTypeName)throws Exception;
 

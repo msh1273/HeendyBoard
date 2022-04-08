@@ -1,6 +1,6 @@
 -- 게시글 테이블 생성
 create table t_board(
-no NUMBER generated as identity primary KEY,
+no NUMBER primary KEY,
 title VARCHAR2(100) not null,
 name VARCHAR2(20) not null,
 content CLOB not null,
@@ -9,6 +9,7 @@ readcount number default 0,
 password varchar2(128) not null,
 board_name varchar2(20) not null
 );
+
 -- 외래키 주입
 ALTER TABLE t_board add constraint FK_BOARD_NAME foreign key(board_name) references t_type_board;
 

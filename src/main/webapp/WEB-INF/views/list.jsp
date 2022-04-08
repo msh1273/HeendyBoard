@@ -31,14 +31,12 @@
       <ul class="nav nav-pills">
 
       </ul>
-      
-      <form role="form" method="post">
+      <form action="${contextPath }/board/${bt }/${pg }/addBoaradType" method="post">
         <input name='boardTypeName' required="required">
-        <button type="submit" class="btn btn-default pull-right">게시판 만들기</button>      
+        <button type="submit" class="btn btn-default">게시판 만들기</button>      
       </form>
     </header>
   </div>
-
 
 <table class="table table-striped">
 	<tr>

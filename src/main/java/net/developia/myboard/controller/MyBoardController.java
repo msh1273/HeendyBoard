@@ -113,12 +113,12 @@ public class MyBoardController {
 			throw e;
 		}
 	}
-	@PostMapping("/")
+	@PostMapping("addBoaradType")
 	public String list(Model model, HttpServletRequest req)throws Exception {
 		String boardTypeName = req.getParameter("boardTypeName");
 		myBoardService.insertBoardType(boardTypeName);
 		model.addAttribute("boardTypeName", boardTypeName);
-		return "list";
+		return "redirect:/";
 	}
 	
 	@GetMapping("insert")

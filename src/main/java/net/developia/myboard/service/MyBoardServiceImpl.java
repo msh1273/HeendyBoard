@@ -81,9 +81,21 @@ public class MyBoardServiceImpl implements MyBoardService{
 		return boardDTO;
 	}
 
+	@Transactional
 	@Override
-	public void updateBoard(BoardDTO boardDTO) throws Exception {
-		boardDAO.updateBoard(boardDTO);
+	public int updateBoard(BoardDTO boardDTO) throws Exception {
+		log.info("수정중." + boardDTO);
+		
+		boardAttachDAO.deleteAll(boardDTO.getNo());
+		
+		int n = boardDAO.updateBoard(boardDTO);
+		
+		if(n == 1 && boardDTO.getAttachList() != null &&
+		boardDTO.getAttachList().size() > 0) {
+		boardDTO.getAttachList().forEach(attach ->{ attach.setNo(boardDTO.getNo());
+		boardAttachDAO.register(attach); }); }
+		
+		return n;
 	}
 
 	@Override
