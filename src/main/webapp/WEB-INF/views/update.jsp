@@ -91,7 +91,7 @@
 								files[i]);
 					}
 					$.ajax({
-						url : 'uploadAjaxAction',
+						url : '../uploadAjaxAction',
 						processData : false,
 						contentType : false,
 						data : formData,

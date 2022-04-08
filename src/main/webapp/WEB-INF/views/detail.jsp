@@ -174,6 +174,8 @@
 		</div>
 	</div>
 </div>
-<a href="${contextPath }/board/${bt}/${pg}/">리스트</a>
-<a href="update">수정</a>
-<a href="delete">삭제</a>
+<div class="pull-right">
+<button class="btn" onclick="location.href='${contextPath }/board/${bt}/${pg}/'">리스트로 돌아가기</button>
+<button class="btn" onclick="location.href='update'">수정하기</button>
+<button class="btn" onclick="location.href='delete'">삭제하기</button>
+</div>

@@ -31,16 +31,17 @@
       <ul class="nav nav-pills">
 
       </ul>
-      <form action="${contextPath }/board/${bt }/${pg }/addBoaradType" method="post">
-        <input name='boardTypeName' required="required">
-        <button type="submit" class="btn btn-default">게시판 만들기</button>      
-      </form>
     </header>
   </div>
 
 <table class="table table-striped">
 	<tr>
-		<td colspan="5">현재 페이지: ${pg }page / ${pageCount}page</td>
+		<td colspan="5">현재 페이지: ${pg }page / ${pageCount}page       
+		<form class="pull-right" action="${contextPath }/board/${bt }/${pg }/addBoaradType" method="post">
+        <input name='boardTypeName' required="required">
+        <button type="submit" class="btn btn-default">게시판 만들기</button>      
+      	</form>
+      </td>
 	</tr>
 
 	<tr>

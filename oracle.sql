@@ -10,6 +10,11 @@ password varchar2(128) not null,
 board_name varchar2(20) not null
 );
 
+-- 시퀀스 생성
+CREATE SEQUENCE t_board_no_seq
+	START WITH 0
+	INCREMENT BY 1;
+	
 -- 외래키 주입
 ALTER TABLE t_board add constraint FK_BOARD_NAME foreign key(board_name) references t_type_board;
 
