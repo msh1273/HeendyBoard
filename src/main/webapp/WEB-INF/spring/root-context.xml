@@ -12,10 +12,7 @@
 
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
-		p:username="ace" p:password="me"
-		p:jdbcUrl="jdbc:log4jdbc:oracle:thin:@localhost:1521/xepdb1"
-		p:driverClassName="net.sf.log4jdbc.DriverSpy" p:maximumPoolSize="20" />
+	<import resource="dataSource-context.xml"/>
 
 	<bean id="myboardSqlSession"
 		class="org.mybatis.spring.SqlSessionFactoryBean"
