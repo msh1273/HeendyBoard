@@ -36,12 +36,16 @@ public class ReplyMapperTests {
 			dto.setNo(noArr[i % 5]);
 			dto.setReply("댓글 테스트중 " + i);
 			dto.setReplyer("replyer" + i);
-			dao.replyInsert(dto);
+			try {
+				dao.replyInsert(dto);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 	
 	@Test
-	public void testRead() {
+	public void testRead() throws Exception{
 		Long targetRno = 5L;
 		
 		ReplyDTO dto = dao.read(targetRno);
@@ -50,13 +54,13 @@ public class ReplyMapperTests {
 	}
 	
 	@Test
-	public void testDelete() {
+	public void testDelete() throws Exception {
 		Long targetRno = 1L;
 		dao.delete(targetRno);
 	}
 	
 	@Test
-	public void testUpdate() {
+	public void testUpdate() throws Exception {
 		Long targetRno = 10L;
 		ReplyDTO dto = dao.read(targetRno);
 		
@@ -67,7 +71,7 @@ public class ReplyMapperTests {
 	}
 	
 	@Test
-	public void testList() {
+	public void testList() throws Exception {
 		List<ReplyDTO> replies = dao.getListWithPaging(noArr[0]);
 		
 		replies.forEach(reply -> log.info(reply));

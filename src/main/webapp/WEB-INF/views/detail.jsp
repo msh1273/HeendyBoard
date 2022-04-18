@@ -240,6 +240,7 @@ ul{
 
 .uploadResult ul li img {
 	width: 100px;
+	height: 100px;
 }
 
 .uploadResult ul li span {
@@ -279,7 +280,8 @@ ul{
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
-			<div class="panel-heading">게시물 상세보기</div>
+			<div class="panel-heading">
+				<i class="fa fa-wpforms fa-fw"></i>게시물 상세보기</div>
 			<div class="panel-body">
 				<div class="form-group">
 					<label>현재 게시판</label> <input class="form-control" readonly

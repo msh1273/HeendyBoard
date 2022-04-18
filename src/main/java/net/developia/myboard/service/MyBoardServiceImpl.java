@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import net.developia.myboard.dao.BoardAttachDAO;
 import net.developia.myboard.dao.BoardDAO;
+import net.developia.myboard.dao.ReplyDAO;
 import net.developia.myboard.dto.BoardAttachDTO;
 import net.developia.myboard.dto.BoardDTO;
 
@@ -27,6 +28,9 @@ public class MyBoardServiceImpl implements MyBoardService{
 	@Setter(onMethod_ = @Autowired)
 	private BoardAttachDAO boardAttachDAO;
 
+	@Setter(onMethod_ = @Autowired)
+	private ReplyDAO replyDAO;
+	
 	@Value("${pageSize}")
 	private int pageSize;
 	
@@ -110,6 +114,10 @@ public class MyBoardServiceImpl implements MyBoardService{
 		log.info("삭제..." + boardDTO.getNo());
 		//DB의 첨부파일부터 삭제
 		boardAttachDAO.deleteAll(boardDTO.getNo());
+		
+		//게시글의 모든 댓글DB 삭제
+		replyDAO.deleteAll(boardDTO.getNo());
+		
 		//이후 게시글 삭제
 		int n = boardDAO.deleteBoard(boardDTO);
 		return n;

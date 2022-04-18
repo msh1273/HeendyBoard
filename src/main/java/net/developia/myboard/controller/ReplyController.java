@@ -28,7 +28,7 @@ public class ReplyController {
 	private ReplyService service;
 	
 	@PostMapping(value = "/new", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> create(@RequestBody ReplyDTO dto){
+	public ResponseEntity<String> create(@RequestBody ReplyDTO dto) throws Exception{
 		log.info("Reply DTO : " + dto);
 		
 		int insertCount = service.replyInsert(dto);
@@ -42,20 +42,20 @@ public class ReplyController {
 			MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_UTF8_VALUE
 	})
-	public ResponseEntity<List<ReplyDTO>> getList(@PathVariable("no") Long no){
+	public ResponseEntity<List<ReplyDTO>> getList(@PathVariable("no") Long no) throws Exception{
 		log.info("getList---------------");
 		return new ResponseEntity<>(service.getList(no), HttpStatus.OK);
 	}
 	
 	@GetMapping(value ="/{rno}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE}) 
-	public ResponseEntity<ReplyDTO> get(@PathVariable("rno") Long rno){
+	public ResponseEntity<ReplyDTO> get(@PathVariable("rno") Long rno) throws Exception{
 		log.info("get : " + rno);
 		return new ResponseEntity<ReplyDTO>(service.get(rno), HttpStatus.OK);
 		
 	}
 	
 	@DeleteMapping(value ="/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE}) 
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	public ResponseEntity<String> remove(@PathVariable("rno") Long rno) throws Exception{
 		log.info("remove : " + rno);
 		return service.remove(rno) == 1 ? new ResponseEntity<>("success", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -65,7 +65,7 @@ public class ReplyController {
 			value = "/{rno}",
 			consumes = "application/json",
 			produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> modify(@RequestBody ReplyDTO dto, @PathVariable("rno") Long rno){
+	public ResponseEntity<String> modify(@RequestBody ReplyDTO dto, @PathVariable("rno") Long rno) throws Exception{
 		dto.setRno(rno);
 		log.info("rno : " + rno);
 		return service.modify(dto) == 1 ? new ResponseEntity<String>("success", HttpStatus.OK) : new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);

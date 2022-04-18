@@ -16,6 +16,10 @@
 		DELETE FROM t_reply WHERE rno = #{rno}
 	</delete>
 	
+	<!-- 해당 게시글의 모든 댓글 삭제 -->
+	<delete id="deleteAll">
+		DELETE FROM t_reply WHERE no = #{no}
+	</delete>
 	<!-- 댓글 수정하기 -->
 	<update id="update">
 		UPDATE t_reply SET reply = #{reply}, updatedate = sysdate WHERE rno = #{rno}
