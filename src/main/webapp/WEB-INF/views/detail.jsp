@@ -6,8 +6,63 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%@ include file="includes/header.jsp"%>
+<script type="text/javascript" src="${contextPath}/resources/js/reply.js"></script>
+
 <script>
 	$(function() {
+		console.log("=====================");
+		console.log("JS TEST");
+		
+		var noValue = '<c:out value="${boardDTO.no}"/>';
+		var replyUL = $(".chat");
+		
+		showList();
+
+		function showList(){
+			replyService.getList({no:noValue}, function(list){
+				var str = "";
+				if(list == null || list.length == 0){
+					replyUL.html("");
+					return;
+				}
+				for(var i =0, len=list.length||0; i<len; i++){
+					str += "<li class='left clearfix' data-rno='12'"+list[i].rno + "'>";
+					str += "	<div><div class='header'><strong class='primary-font'>" + list[i].replyer+"</strong>";
+					str += "		<small class='pull-right text-muted'>" + replyService.displayTime(list[i].replyDate) + "</small></div>";
+					str += "			<p>"+list[i].reply + "</p></div></li>";
+					str += "<hr>"
+				}
+				replyUL.html(str);
+			});
+		}
+		
+/* 		//댓글 삭제 테스트
+		replyService.remove(21, function(count){
+			console.log(count);
+			if(count === "success"){
+				alert("REMOVED");
+			}
+		},function(err){
+			alert('ERROR...');
+		}); */
+		
+/* 		//댓글 수정 테스트
+		replyService.update({
+			rno:41,
+			no:noValue,
+			reply: "이거 수정한거임!"
+		}, function(result){
+			alert("수정 완료!");
+		}); */
+		
+		replyService.get(10, function(data){
+			console.log(data);
+		});
+		var operForm = $("#operForm")
+		$("button[data-oper='modify']").on("click", function(e){
+			operForm.attr("action", "/board/modify").submit();
+		});
+		
 		$(".bigPictureWrapper").on("click", function(e){
 			$(".bigPicture").animate({width:'0%', height: '0%'}, 1000);
 			setTimeout(() => {
@@ -63,6 +118,9 @@
 	<div class='bigPicture'></div>
 </div>
 <style>
+ul{
+	list-style: none;
+}
 .uploadResult {
 	width: 100%;
 	background-color: gray;
@@ -170,6 +228,30 @@
 					<ul>
 					</ul>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 댓글 영역 -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<i class="fa fa-comments fa-fw"></i> 댓글	
+			</div>
+			<div class="panel-body">
+				<ul class="chat">
+					<li class="left clearfix" data-rno='12'>
+						<div>
+							<div class="header">
+								<strong class="primary-font">user00</strong>
+								<small class="pull-right text-muted">2022-04-19</small>
+							</div>
+							<p>Good job!</p>
+						</div>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>
