@@ -41,3 +41,20 @@ no number
 alter table t_attach add constraint pk_attach primary key (uuid);
 
 alter table t_attach add constraint fk_board_attach foreign key(no) references t_board(no);
+
+
+-- 댓글 처리를 위한 테이블
+create table t_replay(
+rno number(10, 0),
+no number(10, 0) not null,
+reply varchar2(1000) not null,
+replyer varchar2(50) not null,
+replyDate date default sysdate,
+updateDate date default sysdate
+);
+
+create sequence seq_reply;
+
+alter table t_reply add constraint pk_reply primary key(rno);
+alter table t_reply add constraint fk_reply_board foreign key(no) references t_board(no);
+
