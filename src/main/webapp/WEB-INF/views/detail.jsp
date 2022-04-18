@@ -6,6 +6,37 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <%@ include file="includes/header.jsp"%>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&items;</button>
+				<h4 class="modal-title" id="myModalLabel">댓글 입력창</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>글쓴이</label>
+					<input class="form-control" name='replyer' value="replyer">
+				</div>
+				<div class="form-group">
+					<label>답글</label>
+					<input class="form-control" name='reply' value="New Reply!">
+				</div>
+				<div class="form-group">
+					<label>Reply Date</label>
+					<input class="form-control" name='replyDate' value="">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id='modalModBtn' type="button" class="btn btn-warning" data-dismiss="modal">수정</button>
+				<button id='modalRemoveBtn' type="button" class="btn btn-danger" data-dismiss="modal">삭제</button>
+				<button id='modalRegisterBtn' type="button" class="btn btn-primary" data-dismiss="modal">등록</button>
+				<button id='modalCloseBtn' type='button' class='btn btn-default' data-dismiss='modal'>닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript" src="${contextPath}/resources/js/reply.js"></script>
 
 <script>
@@ -26,7 +57,7 @@
 					return;
 				}
 				for(var i =0, len=list.length||0; i<len; i++){
-					str += "<li class='left clearfix' data-rno='12'"+list[i].rno + "'>";
+					str += "<li class='left clearfix' data-rno='"+list[i].rno + "'>";
 					str += "	<div><div class='header'><strong class='primary-font'>" + list[i].replyer+"</strong>";
 					str += "		<small class='pull-right text-muted'>" + replyService.displayTime(list[i].replyDate) + "</small></div>";
 					str += "			<p>"+list[i].reply + "</p></div></li>";
@@ -35,7 +66,23 @@
 				replyUL.html(str);
 			});
 		}
+		var modal = $(".modal");
+		var modalInputReply = modal.find("input[name='reply']");
+		var modalInputReplyer = modal.find("input[name='replyer']");
+		var modalInputReplyDate = modal.find("input[name='replyDate']");
 		
+		var modalModBtn = $("#modalModBtn");
+		var modalRemoveBtn = $("#modalRemoveBtn");
+		var modalRegisterBtn = $("#modalRegisterBtn");
+		
+		$("#addReplyBtn").on("click", function(e){
+			modal.find("input").val("");
+			modalInputReplyDate.closest("div").hide();
+			modal.find("button[id != 'modalCloseBtn']").hide();
+			
+			modalRegisterBtn.show();
+			$(".modal").modal('show');
+		});
 /* 		//댓글 삭제 테스트
 		replyService.remove(21, function(count){
 			console.log(count);
@@ -55,9 +102,60 @@
 			alert("수정 완료!");
 		}); */
 		
-		replyService.get(10, function(data){
+		/* replyService.get(10, function(data){
 			console.log(data);
+		}); */
+		
+		//댓글 수정 이벤트 처리
+		$("#modalModBtn").on("click", function(e){
+			var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
+			replyService.update(reply, function(result){
+				alert(result);
+				modal.modal("hide");
+				showList();
+			});
 		});
+		//댓글 삭제 이벤트 처리
+		$("#modalRemoveBtn").on("click", function(e){
+			var rno = modal.data("rno");
+			
+			replyService.remove(rno, function(result){
+				alert(result);
+				modal.modal("hide");
+				showList();
+			});
+		});
+		//댓글 등록 이벤트 처리
+		$("#modalRegisterBtn").on("click", function(e){
+			var reply={
+					reply: modalInputReply.val(),
+					replyer: modalInputReplyer.val(),
+					no: noValue
+			};
+			replyService.add(reply, function(result){
+				alert(result);
+				modal.find("input").val("");
+				modal.find("hide");
+				showList();
+			});
+		});
+		//댓글 클릭 이벤트 처리
+		$(".chat").on("click", "li", function(e){
+			var rno = $(this).data("rno");
+			replyService.get(rno, function(reply){
+				modalInputReply.val(reply.reply);
+				modalInputReplyer.val(reply.replyer);
+				modalInputReplyDate.val(replyService.displayTime( reply.replyDate)).attr("readonly", "readonly");
+				modal.data("rno", reply.rno);
+
+				modal.find("button[id != 'modalCloseBtn']").hide();
+				modalModBtn.show();
+				modalRemoveBtn.show();
+
+				$(".modal").modal("show");
+			});
+		});
+
 		var operForm = $("#operForm")
 		$("button[data-oper='modify']").on("click", function(e){
 			operForm.attr("action", "/board/modify").submit();
@@ -222,7 +320,9 @@ ul{
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
-			<div class="panel-heading">첨부 파일</div>
+			<div class="panel-heading">
+				<i class="fa fa-folder-open fa-fw"></i> 첨부 파일
+			</div>
 			<div class="panel-body">
 				<div class='uploadResult'>
 					<ul>
@@ -238,19 +338,11 @@ ul{
 	<div class="col-lg-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-comments fa-fw"></i> 댓글	
+				<i class="fa fa-comments fa-fw"></i> 댓글
+				<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>댓글 달기</button>	
 			</div>
 			<div class="panel-body">
 				<ul class="chat">
-					<li class="left clearfix" data-rno='12'>
-						<div>
-							<div class="header">
-								<strong class="primary-font">user00</strong>
-								<small class="pull-right text-muted">2022-04-19</small>
-							</div>
-							<p>Good job!</p>
-						</div>
-					</li>
 				</ul>
 			</div>
 		</div>
@@ -261,3 +353,4 @@ ul{
 <button class="btn" onclick="location.href='update'">수정하기</button>
 <button class="btn" onclick="location.href='delete'">삭제하기</button>
 </div>
+
