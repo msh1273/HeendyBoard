@@ -11,6 +11,25 @@
 <%@ include file="includes/header.jsp"%>
 <script>
 	$(function(){
+		/* function actionForm(){
+			console.log("페이지 버튼 클릭!")
+			document.getElementById('actionForm').submit();
+		} */
+		var searchForm = $("#searchForm");
+		$("#searchForm button").on("click", function(e){
+			if(!searchForm.find("option:selected").val()){
+				alert("검색종류를 선택하세요");
+				return false;
+			}
+			if(!searchForm.find("input[name='keyword']").val()){
+				alert("키워드를 입력하세요");
+				return false;
+			}
+			//searchForm.find("input[name='pg']").val();
+			e.preventDefault();
+			console.log("전송됨");
+			searchForm.submit();
+		});
 		var path = window.location.pathname;
 		var rp = path + "loadBoardType";
 		console.log(rp);
@@ -67,7 +86,24 @@
 		</tr>
 	</c:forEach>
 </table>
-
+<div class='row'>
+	<div class="col-lg-12">
+		<form id='searchForm' action="${pageCount}/../../1/" method='get'>
+			<select name='type'>
+				<option value="" <c:out value="${type == null ? 'selected':''}"/>>--</option>
+					<option value="T" <c:out value="${type eq 'T' ? 'selected':'' }"/>>제목</option>
+					<option value="C" <c:out value="${type eq 'C' ? 'selected':'' }"/>>내용</option>
+					<option value="W" <c:out value="${type eq 'W' ? 'selected':'' }"/>>작성자</option>
+					<option value="TC" <c:out value="${type eq 'TC' ? 'selected':'' }"/>>제목 or 내용</option>
+					<option value="TW" <c:out value="${type eq 'TW' ? 'selected':'' }"/>>제목 or 작성자</option>
+					<option value="TCW" <c:out value="${type eq 'TCW' ? 'selected':'' }"/>>제목 or 내용 or 작성자</option>
+			</select>
+			<input type="text"name='keyword' value='<c:out value="${keyword}"/>'/>
+			<input type='hidden' name='pg' value='${pg}'>
+			<button class='btn btn-default'>Search</button>
+		</form>
+	</div>
+</div>
 <div class="text-center">
 	<ul class="pagination">
 		<c:if test="${startPage != 1}">
@@ -79,7 +115,7 @@
 				<li class="page-item active"><a class="page-link">${p }</a></li>
 			</c:if>
 			<c:if test="${p != pg}">
-				<li class="page-item"><a href="${contextPath }/board/${bt}/${p }/">${p }</a></li>
+				<li class="page-item"><a href="${contextPath }/board/${bt}/${p }/?type=${type}&keyword=${keyword}">${p }</a></li>
 			</c:if>
 		</c:forEach>
 		<c:if test="${endPage != pageCount }">
@@ -87,4 +123,11 @@
 		</c:if>
 	</ul>
 </div>
+
+<form id='actionForm' action="${contextPath }/../" method='get'>
+	<input type='hidden' name='pg' value='${pg}'>
+	<input type='hidden' name='type' value='<c:out value="${type}"/>'/>
+	<input type='hidden' name='keyword' value='<c:out value="${keyword}"/>'/>
+</form>
+
 <a class="btn btn-default pull-right" href="insert">글쓰기 </a>

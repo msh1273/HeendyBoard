@@ -7,9 +7,9 @@ import net.developia.myboard.dto.BoardDTO;
 
 public interface MyBoardService {
 
-	List<BoardDTO> getBoardList(String bt, long pg) throws Exception;
+	List<BoardDTO> getBoardList(String bt, long pg, String type, String keyword) throws Exception;
 
-	long getBoardTotal(String bt) throws Exception;
+	long getBoardTotal(String bt, String type, String keyword) throws Exception;
 
 	List<String> getAllBoardType() throws Exception;
 

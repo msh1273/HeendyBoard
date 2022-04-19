@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -84,21 +85,24 @@ public class MyBoardController {
 	}
 	
 	@GetMapping("/")
-	public String list(@PathVariable("bt") String bt, @PathVariable("pg") long pg, Model model)throws Exception{
+	public String list(@PathVariable("bt") String bt, @PathVariable("pg") long pg, @RequestParam(value="type", required=false) String type, @RequestParam(value="keyword", required=false) String keyword, Model model)throws Exception{
 		try {
-			long totalCount = myBoardService.getBoardTotal(bt);
+			long totalCount = myBoardService.getBoardTotal(bt, type, keyword);
 			//나타낼 총 페이지 수
 			long pageCount = (long) Math.ceil((double)totalCount / pageSize);
 			
 			//현재 페이지에서 필요한 만큼만 리스트를 가져온다.
-			List<BoardDTO> list = myBoardService.getBoardList(bt, pg);
-			
+			List<BoardDTO> list = myBoardService.getBoardList(bt, pg, type, keyword);
+			System.out.println("리스트 사이즈!" + list.size());
 			long startPage = (pg-1) / blockSize * blockSize+1;
 			long endPage = startPage + blockSize - 1;
 			if (endPage > pageCount) {
 				endPage = pageCount;
 			}
-			
+			if(type != null && keyword != null) {
+				model.addAttribute("type", type);
+				model.addAttribute("keyword", keyword);
+			}
 			model.addAttribute("list", list);
 			model.addAttribute("pageCount", pageCount);
 			model.addAttribute("pg", pg);

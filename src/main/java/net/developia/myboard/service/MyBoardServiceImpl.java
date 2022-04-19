@@ -16,6 +16,7 @@ import net.developia.myboard.dao.BoardDAO;
 import net.developia.myboard.dao.ReplyDAO;
 import net.developia.myboard.dto.BoardAttachDTO;
 import net.developia.myboard.dto.BoardDTO;
+import net.developia.myboard.dto.Criteria;
 
 
 @Log4j
@@ -31,20 +32,41 @@ public class MyBoardServiceImpl implements MyBoardService{
 	@Setter(onMethod_ = @Autowired)
 	private ReplyDAO replyDAO;
 	
+	private Criteria cri = new Criteria();
+	
 	@Value("${pageSize}")
 	private int pageSize;
 	
 	// 게시글 리스트 받아오기
 	@Override
-	public List<BoardDTO> getBoardList(String bt, long pg) throws Exception {
+	public List<BoardDTO> getBoardList(String bt, long pg, String type, String keyword) throws Exception {
 		long startNum = (pg-1)*pageSize + 1;
 		long endNum = pg * pageSize;
-		return boardDAO.getBoardList(bt, startNum, endNum);
+		log.info("타입은!!!!" + type);
+		String[] typeArr = {"T", "C", "W"};
+
+		if(type != null) {
+			typeArr = type.split("");			
+		}
+		if(keyword == null) {
+			keyword = "";
+		}
+//		String[] typeArr = {"T", "C", "W"};
+//		String keyword = "";
+		return boardDAO.getBoardList(bt, pg, startNum, endNum, typeArr, keyword);
 	}
 
 	@Override
-	public long getBoardTotal(String bt) throws Exception {
-		return boardDAO.getBoardTotal(bt);
+	public long getBoardTotal(String bt, String type, String keyword) throws Exception {
+		String[] typeArr = {"T", "C", "W"};
+
+		if(type != null) {
+			typeArr = type.split("");			
+		}
+		if(keyword == null) {
+			keyword = "";
+		}
+		return boardDAO.getBoardTotal(bt, typeArr, keyword);
 	}
 
 	@Override

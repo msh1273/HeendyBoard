@@ -23,6 +23,7 @@ public class ReplyMapperTests {
 	@Setter(onMethod_ = @Autowired)
 	private ReplyDAO dao;
 	
+	
 	@Test
 	public void testMapper() {
 		log.info(dao);
@@ -76,4 +77,6 @@ public class ReplyMapperTests {
 		
 		replies.forEach(reply -> log.info(reply));
 	}
+	
+
 }
